@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -42,14 +40,14 @@ public class UserController {
     return "delete thanh";
   }
 
-  @GetMapping("/user")
-  public List<User> getAllUsers() {
-    return userService.handleGetAllUsers();
+  @GetMapping("/user/{id}")
+  public User getUserById(@PathVariable("id") long id) {
+    return this.userService.handleGetUserById(id);
   }
 
-  @GetMapping("/user/{id}")
-  public Optional<User> getUserById(@PathVariable("id") long id) {
-    return userService.handleGetUserById(id);
+  @GetMapping("/user")
+  public List<User> getAllUsers() {
+    return this.userService.handleGetAllUsers();
   }
 
 }

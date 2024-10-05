@@ -24,12 +24,16 @@ public class UserService {
     this.userRepository.deleteById(id);
   }
 
-  public List<User> handleGetAllUsers() {
-    return userRepository.findAll();
+  public User handleGetUserById(long id) {
+    Optional<User> userOptional = this.userRepository.findById(id);
+    if (userOptional.isPresent()) {
+      return userOptional.get();
+    }
+    return null;
   }
 
-  public Optional<User> handleGetUserById(long id) {
-    return userRepository.findById(id);
+  public List<User> handleGetAllUsers() {
+    return this.userRepository.findAll();
   }
 
 }
