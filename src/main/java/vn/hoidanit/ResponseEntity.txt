@@ -1,0 +1,10 @@
+ResponseEntity<T> có thể dùng 3 cách:
+
+1- Tạo mới object dạng 
+  new ResponseEntity<>(user, HttpStatus.OK)
+
+2- Dùng dạng static method 
+  ResponseEntity.ok(user)
+
+3- Dùng dạng builder 
+  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found").build()
