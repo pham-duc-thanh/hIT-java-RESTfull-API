@@ -3,7 +3,6 @@ package vn.hoidanit.jobhunter.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,11 +38,6 @@ public class UserController {
     // return ResponseEntity.ok(thanhUser);
     // return new ResponseEntity<>(thanhUser, HttpStatus.CREATED);
     return ResponseEntity.status(HttpStatus.CREATED).body(thanhUser);
-  }
-
-  @ExceptionHandler(value = IdInvalidException.class)
-  public ResponseEntity<String> hanldeIdExeption(IdInvalidException idException) {
-    return ResponseEntity.badRequest().body(idException.getMessage());
   }
 
   @DeleteMapping("/users/{id}")
