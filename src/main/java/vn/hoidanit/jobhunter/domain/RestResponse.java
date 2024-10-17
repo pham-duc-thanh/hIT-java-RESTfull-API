@@ -1,7 +1,5 @@
 package vn.hoidanit.jobhunter.domain;
 
-import com.mysql.cj.x.protobuf.MysqlxDatatypes.Object;
-
 public class RestResponse<T> {
   private int statusCode;
   private String error;
