@@ -2,6 +2,7 @@ package vn.hoidanit.jobhunter.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,18 +22,18 @@ public class UserController {
 
   private final UserService userService;
 
-  public UserController(UserService userService) {
+  private final PasswordEncoder passwordEncoder;
+
+  public UserController(UserService userService, PasswordEncoder passwordEncoder) {
     this.userService = userService;
+    this.passwordEncoder = passwordEncoder;
   }
 
   @PostMapping("/users")
   public ResponseEntity<User> createNewUser(@RequestBody User postManUser) {
 
-    // User user = new User();
-    // user.setEmail("taothichmi2009@gmail.com");
-    // user.setName("Thanh");
-    // user.setPassword("123456");
-
+    String hashPassword = this.passwordEncoder.encode(postManUser.getPassword());
+    postManUser.setPassword(hashPassword);
     User thanhUser = this.userService.handleCreateUser(postManUser);
 
     // return ResponseEntity.ok(thanhUser);
