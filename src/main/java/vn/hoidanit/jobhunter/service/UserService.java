@@ -69,4 +69,8 @@ public class UserService {
     }
     return existingUser;
   }
+
+  public User handleGetUserByUsername(String username) {
+    return this.userRepository.findByEmail(username);
+  }
 }
