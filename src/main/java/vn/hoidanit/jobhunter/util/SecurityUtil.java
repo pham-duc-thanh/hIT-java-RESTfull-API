@@ -39,7 +39,7 @@ public class SecurityUtil {
             .issuedAt(now)
             .expiresAt(validity)
             .subject(authentication.getName())
-            .claim("hoidanid", authentication)
+            .claim("hoidanit", authentication)
             .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
