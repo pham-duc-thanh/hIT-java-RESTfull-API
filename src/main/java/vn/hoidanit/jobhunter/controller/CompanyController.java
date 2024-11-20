@@ -21,9 +21,9 @@ public class CompanyController {
   }
 
   @PostMapping("/companies")
-  public ResponseEntity<Company> createNewCompany(@Valid @RequestBody Company postManUser) {
+  public ResponseEntity<?> createCompany(@Valid @RequestBody Company reqCompany) {
 
-    Company thanhCompany = this.companyService.handleCreateCompany(postManUser);
+    Company thanhCompany = this.companyService.handleCreateCompany(reqCompany);
 
     // return ResponseEntity.ok(thanhCompany);
     // return new ResponseEntity<>(thanhCompany, HttpStatus.CREATED);
