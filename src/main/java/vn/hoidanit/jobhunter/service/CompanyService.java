@@ -37,13 +37,31 @@ public class CompanyService {
   }
 
   // UPDATE
+
+  // CÁCH 1
+  // public Company handleUpdateCompany(Company updateCompany) {
+  // Company existingCompany =
+  // this.companyRepository.findById(updateCompany.getId()).orElse(null);
+  // if (existingCompany != null) {
+  // existingCompany.setName(updateCompany.getName());
+  // existingCompany.setDescription(updateCompany.getDescription());
+  // existingCompany.setAddress(updateCompany.getAddress());
+  // existingCompany.setLogo(updateCompany.getLogo());
+  // existingCompany = this.companyRepository.save(existingCompany);
+  // }
+  // return existingCompany;
+  // }
+
+  // CÁCH 2
   public Company handleUpdateCompany(Company updateCompany) {
-    Company existingCompany = this.companyRepository.findById(updateCompany.getId()).orElse(null);
+    Company existingCompany = this.handleGetCompanyById(updateCompany.getId());
     if (existingCompany != null) {
       existingCompany.setName(updateCompany.getName());
       existingCompany.setDescription(updateCompany.getDescription());
       existingCompany.setAddress(updateCompany.getAddress());
       existingCompany.setLogo(updateCompany.getLogo());
+
+      // update
       existingCompany = this.companyRepository.save(existingCompany);
     }
     return existingCompany;
