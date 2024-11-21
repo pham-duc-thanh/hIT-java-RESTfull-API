@@ -23,7 +23,7 @@ public class CompanyService {
   }
 
   // GET ALL
-  public List<Company> handleGetAllCompanies() {
+  public List<Company> handleGetCompany() {
     return this.companyRepository.findAll();
   }
 
@@ -37,7 +37,6 @@ public class CompanyService {
   }
 
   // UPDATE
-
   // CÁCH 1
   // public Company handleUpdateCompany(Company updateCompany) {
   // Company existingCompany =
@@ -52,19 +51,34 @@ public class CompanyService {
   // return existingCompany;
   // }
 
+  // UPDATE
   // CÁCH 2
-  public Company handleUpdateCompany(Company updateCompany) {
-    Company existingCompany = this.handleGetCompanyById(updateCompany.getId());
-    if (existingCompany != null) {
-      existingCompany.setName(updateCompany.getName());
-      existingCompany.setDescription(updateCompany.getDescription());
-      existingCompany.setAddress(updateCompany.getAddress());
-      existingCompany.setLogo(updateCompany.getLogo());
+  // public Company handleUpdateCompany(Company updateCompany) {
+  // Company existingCompany = this.handleGetCompanyById(updateCompany.getId());
+  // if (existingCompany != null) {
+  // existingCompany.setName(updateCompany.getName());
+  // existingCompany.setDescription(updateCompany.getDescription());
+  // existingCompany.setAddress(updateCompany.getAddress());
+  // existingCompany.setLogo(updateCompany.getLogo());
+  // // update
+  // existingCompany = this.companyRepository.save(existingCompany);
+  // }
+  // return existingCompany;
+  // }
 
-      // update
-      existingCompany = this.companyRepository.save(existingCompany);
+  // UPDATE
+  // CÁCH 3
+  public Company handleUpdateCompany(Company c) {
+    Optional<Company> companyOptional = this.companyRepository.findById(c.getId());
+    if (companyOptional.isPresent()) {
+      Company currentCompany = companyOptional.get();
+      currentCompany.setLogo(c.getLogo());
+      currentCompany.setName(c.getName());
+      currentCompany.setDescription(c.getDescription());
+      currentCompany.setAddress(c.getAddress());
+      return this.companyRepository.save(currentCompany);
     }
-    return existingCompany;
+    return null;
   }
 
   // DELETE

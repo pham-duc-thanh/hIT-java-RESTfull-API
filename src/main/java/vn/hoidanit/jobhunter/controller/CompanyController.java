@@ -37,11 +37,12 @@ public class CompanyController {
   }
 
   @GetMapping("/companies")
-  public ResponseEntity<List<Company>> getAllCompanies() {
-    this.companyService.handleGetAllCompanies();
+  public ResponseEntity<List<Company>> getCompany() {
+    List<Company> companies = this.companyService.handleGetCompany();
+    return ResponseEntity.ok(companies);
     // return
-    // ResponseEntity.status(HttpStatus.OK).body(this.companyService.handleGetAllCompanies());
-    return ResponseEntity.ok(this.companyService.handleGetAllCompanies());
+    // ResponseEntity.status(HttpStatus.OK).body(this.companyService.handleGetCompany());
+
   }
 
   @GetMapping("/companies/{id}")
@@ -53,21 +54,24 @@ public class CompanyController {
   }
 
   @PutMapping("/companies")
-  public ResponseEntity<Company> updateCompany(@RequestBody Company company) {
-    this.companyService.handleUpdateCompany(company);
+  public ResponseEntity<Company> updateCompany(@Valid @RequestBody Company reqCompany) {
+    Company updatedCompany = this.companyService.handleUpdateCompany(reqCompany);
+    return ResponseEntity.ok(updatedCompany);
+
     // return
-    // ResponseEntity.status(HttpStatus.OK).body(this.userService.handleUpdateCompany(company));
-    return ResponseEntity.ok(this.companyService.handleUpdateCompany(company));
+    // ResponseEntity.status(HttpStatus.OK).body(this.userService.handleUpdateCompany(reqCompany));
+
   }
 
   @DeleteMapping("/companies/{id}")
   public ResponseEntity<Void> deleteCompany(@PathVariable("id") long id) {
 
     this.companyService.handleDeleteCompany(id);
+    return ResponseEntity.ok().build();
+
     // return ResponseEntity.status(HttpStatus.OK).body("Delete successfully");
     // return new ResponseEntity<String>("Delete successfully", HttpStatus.OK);
     // return ResponseEntity.ok("Delete successfully");
-    return ResponseEntity.ok().build();
   }
 
 }
