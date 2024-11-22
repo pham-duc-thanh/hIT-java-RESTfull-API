@@ -2,6 +2,7 @@ package vn.hoidanit.jobhunter.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import vn.hoidanit.jobhunter.domain.User;
@@ -41,19 +42,20 @@ public class UserService {
   }
 
   // GET ALL
-  public ResultPaginationDTO handleGetAllUsers(Pageable pageable) {
-    Page<User> pageUser = this.userRepository.findAll(pageable);
+  public ResultPaginationDTO handleGetAllUsers(Specification<User> pageable) {
+    List<User> pageUser = this.userRepository.findAll(pageable);
     ResultPaginationDTO rs = new ResultPaginationDTO();
     Meta mt = new Meta();
 
-    mt.setPage(pageUser.getNumber() + 1); // Trang bao nhiêu
-    mt.setPageSize(pageUser.getSize()); // Tối đa bao nhiêu phần tử
+    // mt.setPage(pageUser.getNumber() + 1); // Trang bao nhiêu
+    // mt.setPageSize(pageUser.getSize()); // Tối đa bao nhiêu phần tử
 
-    mt.setPages(pageUser.getTotalPages()); // Tổng số trang
-    mt.setTotal(pageUser.getTotalElements()); // Tổng số phần tử có trong Database
+    // mt.setPages(pageUser.getTotalPages()); // Tổng số trang
+    // mt.setTotal(pageUser.getTotalElements()); // Tổng số phần tử có trong
+    // Database
 
     rs.setMeta(mt);
-    rs.setResult(pageUser.getContent());
+    rs.setResult(pageUser);
 
     return rs;
   }
