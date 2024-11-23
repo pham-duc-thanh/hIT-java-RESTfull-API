@@ -32,8 +32,8 @@ public class CompanyService {
     ResultPaginationDTO rs = new ResultPaginationDTO();
     Meta mt = new Meta();
 
-    mt.setPage(pageCompany.getNumber() + 1);// Trang bao nhiêu
-    mt.setPageSize(pageCompany.getSize());// Tối đa bao nhiêu phần tử
+    mt.setPage(pageable.getPageNumber() + 1);// Trang bao nhiêu
+    mt.setPageSize(pageable.getPageSize());// Tối đa bao nhiêu phần tử
 
     mt.setPages(pageCompany.getTotalPages());// Tổng số trang
     mt.setTotal(pageCompany.getTotalElements()); // Tổng số phần tử có trong

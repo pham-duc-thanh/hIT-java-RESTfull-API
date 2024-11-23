@@ -46,8 +46,8 @@ public class UserService {
     ResultPaginationDTO rs = new ResultPaginationDTO();
     Meta mt = new Meta();
 
-    mt.setPage(pageUser.getNumber() + 1); // Trang bao nhiêu
-    mt.setPageSize(pageUser.getSize()); // Tối đa bao nhiêu phần tử
+    mt.setPage(pageable.getPageNumber() + 1); // Trang bao nhiêu
+    mt.setPageSize(pageable.getPageSize()); // Tối đa bao nhiêu phần tử
 
     mt.setPages(pageUser.getTotalPages()); // Tổng số trang
     mt.setTotal(pageUser.getTotalElements()); // Tổng số phần tử có trong Database
