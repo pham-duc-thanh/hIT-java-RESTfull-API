@@ -9,7 +9,6 @@ import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.dto.Meta;
 import vn.hoidanit.jobhunter.domain.dto.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.repository.UserRepository;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -42,20 +41,19 @@ public class UserService {
   }
 
   // GET ALL
-  public ResultPaginationDTO handleGetAllUsers(Specification<User> pageable) {
-    List<User> pageUser = this.userRepository.findAll(pageable);
+  public ResultPaginationDTO handleGetAllUsers(Specification<User> spec, Pageable pageable) {
+    Page<User> pageUser = this.userRepository.findAll(spec, pageable);
     ResultPaginationDTO rs = new ResultPaginationDTO();
     Meta mt = new Meta();
 
-    // mt.setPage(pageUser.getNumber() + 1); // Trang bao nhiêu
-    // mt.setPageSize(pageUser.getSize()); // Tối đa bao nhiêu phần tử
+    mt.setPage(pageUser.getNumber() + 1); // Trang bao nhiêu
+    mt.setPageSize(pageUser.getSize()); // Tối đa bao nhiêu phần tử
 
-    // mt.setPages(pageUser.getTotalPages()); // Tổng số trang
-    // mt.setTotal(pageUser.getTotalElements()); // Tổng số phần tử có trong
-    // Database
+    mt.setPages(pageUser.getTotalPages()); // Tổng số trang
+    mt.setTotal(pageUser.getTotalElements()); // Tổng số phần tử có trong Database
 
     rs.setMeta(mt);
-    rs.setResult(pageUser);
+    rs.setResult(pageUser.getContent());
 
     return rs;
   }
