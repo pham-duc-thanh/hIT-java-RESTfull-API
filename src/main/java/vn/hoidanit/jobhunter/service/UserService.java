@@ -7,9 +7,15 @@ import org.springframework.stereotype.Service;
 
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.dto.Meta;
+import vn.hoidanit.jobhunter.domain.dto.ResCreateUserDTO;
+import vn.hoidanit.jobhunter.domain.dto.ResUpdateUserDTO;
+import vn.hoidanit.jobhunter.domain.dto.ResUserDTO;
 import vn.hoidanit.jobhunter.domain.dto.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.repository.UserRepository;
+
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -32,7 +38,7 @@ public class UserService {
   }
 
   // GET BY ID
-  public User handleGetUserById(long id) {
+  public User fetchUserById(long id) {
     Optional<User> userOptional = this.userRepository.findById(id);
     if (userOptional.isPresent()) {
       return userOptional.get();
@@ -41,7 +47,7 @@ public class UserService {
   }
 
   // GET ALL
-  public ResultPaginationDTO handleGetAllUsers(Specification<User> spec, Pageable pageable) {
+  public ResultPaginationDTO fetchAllUser(Specification<User> spec, Pageable pageable) {
     Page<User> pageUser = this.userRepository.findAll(spec, pageable);
     ResultPaginationDTO rs = new ResultPaginationDTO();
     Meta mt = new Meta();
@@ -53,9 +59,62 @@ public class UserService {
     mt.setTotal(pageUser.getTotalElements()); // Tổng số phần tử có trong Database
 
     rs.setMeta(mt);
-    rs.setResult(pageUser.getContent());
+
+    // remove sensitive data
+    List<ResUserDTO> listUser = pageUser.getContent()
+        .stream().map(item -> new ResUserDTO(
+            item.getId(),
+            item.getEmail(),
+            item.getName(),
+            item.getGender(),
+            item.getAddress(),
+            item.getAge(),
+            item.getUpdatedAt(),
+            item.getCreatedAt()))
+        .collect(Collectors.toList());
+    rs.setResult(listUser);
 
     return rs;
+  }
+
+  public boolean isEmailExist(String email) {
+    return this.userRepository.existsByEmail(email);
+  }
+
+  public ResCreateUserDTO convertToResCreateUserDTO(User user) {
+    ResCreateUserDTO res = new ResCreateUserDTO();
+    res.setId(user.getId());
+    res.setEmail(user.getEmail());
+    res.setName(user.getName());
+    res.setAge(user.getAge());
+    res.setCreatedAt(user.getCreatedAt());
+    res.setGender(user.getGender());
+    res.setAddress(user.getAddress());
+    return res;
+  }
+
+  public ResUpdateUserDTO convertToResUpdateUserDTO(User user) {
+    ResUpdateUserDTO res = new ResUpdateUserDTO();
+    res.setId(user.getId());
+    res.setName(user.getName());
+    res.setAge(user.getAge());
+    res.setUpdatedAt(user.getUpdatedAt());
+    res.setGender(user.getGender());
+    res.setAddress(user.getAddress());
+    return res;
+  }
+
+  public ResUserDTO convertToResUserDTO(User user) {
+    ResUserDTO res = new ResUserDTO();
+    res.setId(user.getId());
+    res.setEmail(user.getEmail());
+    res.setName(user.getName());
+    res.setAge(user.getAge());
+    res.setUpdatedAt(user.getUpdatedAt());
+    res.setCreatedAt(user.getCreatedAt());
+    res.setGender(user.getGender());
+    res.setAddress(user.getAddress());
+    return res;
   }
 
   // UPDATE
@@ -74,17 +133,18 @@ public class UserService {
   // }
 
   // CÁCH 2
-  public User handleUpdateUser(User updatedUser) {
-    User existingUser = this.handleGetUserById(updatedUser.getId());
-    if (existingUser != null) {
-      existingUser.setName(updatedUser.getName());
-      existingUser.setEmail(updatedUser.getEmail());
-      existingUser.setPassword(updatedUser.getPassword());
+  public User handleUpdateUser(User reqUser) {
+    User currentUser = this.fetchUserById(reqUser.getId());
+    if (currentUser != null) {
+      currentUser.setAddress(reqUser.getAddress());
+      currentUser.setGender(reqUser.getGender());
+      currentUser.setAge(reqUser.getAge());
+      currentUser.setName(reqUser.getName());
 
       // update
-      existingUser = this.userRepository.save(existingUser);
+      currentUser = this.userRepository.save(currentUser);
     }
-    return existingUser;
+    return currentUser;
   }
 
   public User handleGetUserByUsername(String username) {
