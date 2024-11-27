@@ -77,6 +77,40 @@ public class UserService {
     return rs;
   }
 
+  // UPDATE
+  // CÁCH 1
+  // public User handleUpdateUser(User updatedUser) {
+  // User existingUser =
+  // this.userRepository.findById(updatedUser.getId()).orElse(null);
+  // if (existingUser != null) {
+  // existingUser.setName(updatedUser.getName());
+  // existingUser.setEmail(updatedUser.getEmail());
+  // existingUser.setPassword(updatedUser.getPassword());
+
+  // existingUser = this.userRepository.save(existingUser);
+  // }
+  // return existingUser;
+  // }
+
+  // CÁCH 2
+  public User handleUpdateUser(User reqUser) {
+    User currentUser = this.fetchUserById(reqUser.getId());
+    if (currentUser != null) {
+      currentUser.setAddress(reqUser.getAddress());
+      currentUser.setGender(reqUser.getGender());
+      currentUser.setAge(reqUser.getAge());
+      currentUser.setName(reqUser.getName());
+
+      // update
+      currentUser = this.userRepository.save(currentUser);
+    }
+    return currentUser;
+  }
+
+  public User handleGetUserByUsername(String username) {
+    return this.userRepository.findByEmail(username);
+  }
+
   public boolean isEmailExist(String email) {
     return this.userRepository.existsByEmail(email);
   }
@@ -117,37 +151,12 @@ public class UserService {
     return res;
   }
 
-  // UPDATE
-  // CÁCH 1
-  // public User handleUpdateUser(User updatedUser) {
-  // User existingUser =
-  // this.userRepository.findById(updatedUser.getId()).orElse(null);
-  // if (existingUser != null) {
-  // existingUser.setName(updatedUser.getName());
-  // existingUser.setEmail(updatedUser.getEmail());
-  // existingUser.setPassword(updatedUser.getPassword());
+  public void updateUserToken(String token, String email) {
+    User currentUser = this.handleGetUserByUsername(email);
 
-  // existingUser = this.userRepository.save(existingUser);
-  // }
-  // return existingUser;
-  // }
-
-  // CÁCH 2
-  public User handleUpdateUser(User reqUser) {
-    User currentUser = this.fetchUserById(reqUser.getId());
     if (currentUser != null) {
-      currentUser.setAddress(reqUser.getAddress());
-      currentUser.setGender(reqUser.getGender());
-      currentUser.setAge(reqUser.getAge());
-      currentUser.setName(reqUser.getName());
-
-      // update
-      currentUser = this.userRepository.save(currentUser);
+      currentUser.setRefreshToken(token);
+      this.userRepository.save(currentUser);
     }
-    return currentUser;
-  }
-
-  public User handleGetUserByUsername(String username) {
-    return this.userRepository.findByEmail(username);
   }
 }
