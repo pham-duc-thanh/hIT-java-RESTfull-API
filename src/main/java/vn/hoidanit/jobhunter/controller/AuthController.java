@@ -16,10 +16,12 @@ import vn.hoidanit.jobhunter.domain.dto.LoginDTO;
 import vn.hoidanit.jobhunter.domain.dto.ResLoginDTO;
 import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
+import vn.hoidanit.jobhunter.util.annotation.ApiMessage;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -39,7 +41,7 @@ public class AuthController {
     this.userService = userService;
   }
 
-  @PostMapping("/login")
+  @PostMapping("/auth/login")
   public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
     // Nạp input gồm username/password vào Security
     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -48,8 +50,6 @@ public class AuthController {
     // xác thực người dùng => cần viết hàm loadUserByUsername
     Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-    // create a token
-    String access_token = this.securityUtil.createAccessToken(authentication);
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
     ResLoginDTO res = new ResLoginDTO();
@@ -61,6 +61,9 @@ public class AuthController {
           currentUserDB.getName());
       res.setUser(userLogin);
     }
+
+    // create a token
+    String access_token = this.securityUtil.createAccessToken(authentication, res.getUser());
 
     res.setAccessToken(access_token);
 
@@ -84,4 +87,19 @@ public class AuthController {
         .body(res);
   }
 
+  @GetMapping("/auth/account")
+  @ApiMessage("fetch account")
+  public ResponseEntity<ResLoginDTO.UserLogin> getAccount() {
+    String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
+
+    User currentUserDB = this.userService.handleGetUserByUsername(email);
+    ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin();
+    if (currentUserDB != null) {
+      userLogin.setId(currentUserDB.getId());
+      userLogin.setEmail(currentUserDB.getEmail());
+      userLogin.setName(currentUserDB.getName());
+    }
+
+    return ResponseEntity.ok().body(userLogin);
+  }
 }
