@@ -47,7 +47,7 @@ public class SecurityUtil {
     @Value("${hoidanit.jwt.refresh-token-validity-in-seconds}")
     private long refreshTokenExpiration;
 
-    public String createAccessToken(Authentication authentication, ResLoginDTO.UserLogin dto) {
+    public String createAccessToken(String email, ResLoginDTO.UserLogin dto) {
         Instant now = Instant.now();
         Instant validity = now.plus(this.accessTokenExpiration, ChronoUnit.SECONDS);
 
@@ -61,7 +61,7 @@ public class SecurityUtil {
         JwtClaimsSet claims = JwtClaimsSet.builder()
             .issuedAt(now)
             .expiresAt(validity)
-            .subject(authentication.getName())
+            .subject(email)
             .claim("user", dto)
             .claim("permission", listAuthority)
             .build();
@@ -88,20 +88,21 @@ public class SecurityUtil {
     return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
 }
 
-  private SecretKey getSecretKey() {
+private SecretKey getSecretKey() {
     byte[] keyBytes = Base64.from(jwtKey).decode();
-    return new SecretKeySpec(keyBytes, 0, keyBytes.length, JWT_ALGORITHM.getName());
-  }
-  
-public Jwt checkValidRefreshToken(String token) {
-        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(
-        getSecretKey()).macAlgorithm(SecurityUtil.JWT_ALGORITHM).build();
-        try {
-            return jwtDecoder.decode(token);
-          } catch (Exception e) {
-            System.out.println(">>> Refresh Token error: " + e.getMessage());
-            throw e;
-          }
+    return new SecretKeySpec(keyBytes, 0, keyBytes.length,
+            JWT_ALGORITHM.getName());
+}
+
+public Jwt checkValidRefreshToken(String token){
+ NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(
+            getSecretKey()).macAlgorithm(SecurityUtil.JWT_ALGORITHM).build();
+            try {
+                 return jwtDecoder.decode(token);
+            } catch (Exception e) {
+                System.out.println(">>> Refresh Token error: " + e.getMessage());
+                throw e;
+            }
 }
   
     /**
