@@ -63,7 +63,7 @@ public class AuthController {
       res.setUser(userLogin);
     }
 
-    // create a token
+    // create access token
     String access_token = this.securityUtil.createAccessToken(authentication, res.getUser());
 
     res.setAccessToken(access_token);
