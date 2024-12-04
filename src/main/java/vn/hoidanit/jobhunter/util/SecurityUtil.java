@@ -51,7 +51,7 @@ public class SecurityUtil {
         listAuthority.add("ROLE_USER_CREATE");
         listAuthority.add("ROLE_USER_UPDATE");
 
-    // @formatter:off
+        // @formatter:off
         JwtClaimsSet claims = JwtClaimsSet.builder()
             .issuedAt(now)
             .expiresAt(validity)
@@ -62,35 +62,33 @@ public class SecurityUtil {
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
-  }
 
-  public String createRefreshToken(String email, ResLoginDTO dto) {
-    Instant now = Instant.now();
-    Instant validity = now.plus(this.refreshTokenExpiration, ChronoUnit.SECONDS);
+    }
 
-   
+    public String createRefreshToken(String email, ResLoginDTO dto) {
+        Instant now = Instant.now();
+        Instant validity = now.plus(this.refreshTokenExpiration, ChronoUnit.SECONDS);
 
-    // @formatter:off
-    JwtClaimsSet claims = JwtClaimsSet.builder()
-        .issuedAt(now)
-        .expiresAt(validity)
-        .subject(email)
-        .claim("user", dto.getUser())
-        .build();
+        // @formatter:off
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+            .issuedAt(now)
+            .expiresAt(validity)
+            .subject(email)
+            .claim("user", dto.getUser())
+            .build();
 
-    JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
-    return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
-}
+        JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
 
-  
-  
+    }
+
+
     /**
      * Get the login of the current user.
      *
      * @return the login of the current user.
      */
-
-  public static Optional<String> getCurrentUserLogin() {
+    public static Optional<String> getCurrentUserLogin() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return Optional.ofNullable(extractPrincipal(securityContext.getAuthentication()));
     }

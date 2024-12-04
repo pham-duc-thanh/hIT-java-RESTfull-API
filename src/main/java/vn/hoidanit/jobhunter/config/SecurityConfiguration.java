@@ -52,7 +52,6 @@ public class SecurityConfiguration {
                 .anyRequest().authenticated())
         .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
             .authenticationEntryPoint(customAuthenticationEntryPoint))
-
         // .exceptionHandling(
         // exceptions -> exceptions
         // .authenticationEntryPoint(customAuthenticationEntryPoint) // 401
@@ -96,7 +95,8 @@ public class SecurityConfiguration {
 
   private SecretKey getSecretKey() {
     byte[] keyBytes = Base64.from(jwtKey).decode();
-    return new SecretKeySpec(keyBytes, 0, keyBytes.length, SecurityUtil.JWT_ALGORITHM.getName());
+    return new SecretKeySpec(keyBytes, 0, keyBytes.length,
+        SecurityUtil.JWT_ALGORITHM.getName());
   }
 
 }
