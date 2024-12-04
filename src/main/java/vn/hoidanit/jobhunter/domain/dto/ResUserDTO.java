@@ -22,9 +22,9 @@ public class ResUserDTO {
   private String address;
   private int age;
 
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+9")
+  // @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+9")
   private Instant updatedAt;
 
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+9")
+  // @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+9")
   private Instant createdAt;
 }

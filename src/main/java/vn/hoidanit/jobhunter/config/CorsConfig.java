@@ -15,11 +15,11 @@ public class CorsConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Cho phép các URL nào có thể kết nối với backend
+        // cho phép các URL nào có thể kết nối tới backend
         configuration.setAllowedOrigins(
                 Arrays.asList("http://localhost:3000", "http://localhost:4173", "http://localhost:5173"));
 
-        // Các method nào được kết nối
+        // các method nào đc kết nối
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
         // các phần header được phép gửi lên
