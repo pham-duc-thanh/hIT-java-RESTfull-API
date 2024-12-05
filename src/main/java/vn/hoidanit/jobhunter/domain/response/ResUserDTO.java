@@ -2,8 +2,6 @@ package vn.hoidanit.jobhunter.domain.response;
 
 import java.time.Instant;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,10 +19,17 @@ public class ResUserDTO {
   private GenderEnum gender;
   private String address;
   private int age;
-
-  // @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+9")
   private Instant updatedAt;
-
-  // @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+9")
   private Instant createdAt;
+
+  private CompanyUser company;
+
+  @Getter
+  @Setter
+  @AllArgsConstructor
+  @NoArgsConstructor
+  public static class CompanyUser {
+    private long id;
+    private String name;
+  }
 }
