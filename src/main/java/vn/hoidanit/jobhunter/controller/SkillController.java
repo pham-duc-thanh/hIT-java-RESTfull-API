@@ -35,55 +35,49 @@ public class SkillController {
 
   @GetMapping("/skills")
   @ApiMessage("fetch all skills")
-  public ResponseEntity<ResultPaginationDTO> getAllSkills(@Filter Specification<Skill> spec, Pageable pageable) {
-
-    return ResponseEntity.ok().body(this.skillService.handleGetSkill(spec, pageable));
+  public ResponseEntity<ResultPaginationDTO> getAll(
+      @Filter Specification<Skill> spec,
+      Pageable pageable) {
+    return ResponseEntity.status(HttpStatus.OK).body(
+        this.skillService.fetchAllSkills(spec, pageable));
   }
 
   @PostMapping("/skills")
   @ApiMessage("Create a skill")
-
-  public ResponseEntity<Skill> createSkill(@Valid @RequestBody Skill reqSkill) throws IdInvalidException {
-
-    boolean isNameExist = this.skillService.isNameExist(reqSkill.getName());
-    if (isNameExist) {
-      throw new IdInvalidException(
-          "Skill name = " + reqSkill.getName() + " đã tồn tại");
+  public ResponseEntity<Skill> create(@Valid @RequestBody Skill s) throws IdInvalidException {
+    // check name
+    if (s.getName() != null && this.skillService.isNameExist(s.getName())) {
+      throw new IdInvalidException("Skill name = " + s.getName() + " đã tồn tại");
     }
-
-    Skill thanhSkill = this.skillService.handleCreateSkill(reqSkill);
-
-    return ResponseEntity.status(HttpStatus.CREATED).body(thanhSkill);
+    return ResponseEntity.status(HttpStatus.CREATED).body(this.skillService.createSkill(s));
   }
 
   @PutMapping("/skills")
   @ApiMessage("Update a skill")
-
-  public ResponseEntity<Skill> updateSkill(@Valid @RequestBody Skill skill) throws IdInvalidException {
-    // Kiểm tra xem tên kỹ năng mới đã tồn tại chưa
-    boolean existingSkill = this.skillService.isNameExist(skill.getName());
-
-    if (existingSkill) {
-      throw new IdInvalidException("Skill name = " + skill.getName() + " đã tồn tại");
+  public ResponseEntity<Skill> update(@Valid @RequestBody Skill s) throws IdInvalidException {
+    // check id
+    Skill currentSkill = this.skillService.fetchSkillById(s.getId());
+    if (currentSkill == null) {
+      throw new IdInvalidException("Skill id = " + s.getId() + " không tồn tại");
     }
-
-    Skill updatedSkill = this.skillService.handleUpdateSkill(skill);
-
-    return ResponseEntity.status(HttpStatus.OK).body(updatedSkill);
+    // check name
+    if (s.getName() != null && this.skillService.isNameExist(s.getName())) {
+      throw new IdInvalidException("Skill name = " + s.getName() + " đã tồn tại");
+    }
+    currentSkill.setName(s.getName());
+    return ResponseEntity.ok().body(this.skillService.updateSkill(currentSkill));
   }
 
   @DeleteMapping("/skills/{id}")
   @ApiMessage("Delete a skill")
-  public ResponseEntity<Void> deleteSkill(@PathVariable("id") long id) throws IdInvalidException {
-
+  public ResponseEntity<Void> delete(@PathVariable("id") long id) throws IdInvalidException {
+    // check id
     Skill currentSkill = this.skillService.fetchSkillById(id);
     if (currentSkill == null) {
-      throw new IdInvalidException("Skill với id = " + id + " không tồn tại");
+      throw new IdInvalidException("Skill id = " + id + " không tồn tại");
     }
-
-    this.skillService.handleDeleteSkill(id);
-
-    return ResponseEntity.ok().build();
+    this.skillService.deleteSkill(id);
+    return ResponseEntity.ok().body(null);
   }
 
 }

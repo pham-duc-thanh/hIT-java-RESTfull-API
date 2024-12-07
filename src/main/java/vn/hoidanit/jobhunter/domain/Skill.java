@@ -2,7 +2,9 @@ package vn.hoidanit.jobhunter.domain;
 
 import java.time.Instant;
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -43,6 +45,7 @@ public class Skill {
     this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
         ? SecurityUtil.getCurrentUserLogin().get()
         : "";
+
     this.createdAt = Instant.now();
   }
 
@@ -51,6 +54,7 @@ public class Skill {
     this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
         ? SecurityUtil.getCurrentUserLogin().get()
         : "";
+
     this.updatedAt = Instant.now();
   }
 }

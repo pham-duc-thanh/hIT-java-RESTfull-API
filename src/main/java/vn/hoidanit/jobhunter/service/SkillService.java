@@ -25,48 +25,47 @@ public class SkillService {
   }
 
   // GET ALL
-  public ResultPaginationDTO handleGetSkill(Specification<Skill> spec, Pageable pageable) {
-    Page<Skill> pageSkill = this.skillRepository.findAll(spec, pageable);
+  public ResultPaginationDTO fetchAllSkills(Specification<Skill> spec, Pageable pageable) {
+    Page<Skill> pageUser = this.skillRepository.findAll(spec, pageable);
     ResultPaginationDTO rs = new ResultPaginationDTO();
     ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
+    mt.setPage(pageable.getPageNumber() + 1);
+    mt.setPageSize(pageable.getPageSize());
 
-    mt.setPage(pageable.getPageNumber() + 1);// Trang bao nhiêu
-    mt.setPageSize(pageable.getPageSize());// Tối đa bao nhiêu phần tử
-
-    mt.setPages(pageSkill.getTotalPages());// Tổng số trang
-    mt.setTotal(pageSkill.getTotalElements()); // Tổng số phần tử có trong
+    mt.setPages(pageUser.getTotalPages());
+    mt.setTotal(pageUser.getTotalElements());
 
     rs.setMeta(mt);
-    rs.setResult(pageSkill.getContent());
+
+    rs.setResult(pageUser.getContent());
     return rs;
-  }
-
-  // CREATE
-  public Skill handleCreateSkill(Skill skill) {
-    return this.skillRepository.save(skill);
-  }
-
-  // UPDATE
-  public Skill handleUpdateSkill(Skill skill) {
-    Optional<Skill> skillOptional = this.skillRepository.findById(skill.getId());
-    if (skillOptional.isPresent()) {
-      Skill currentSkill = skillOptional.get();
-      currentSkill.setName(skill.getName());
-      return this.skillRepository.save(currentSkill);
-    }
-    return null;
-  }
-
-  // DELETE
-  public void handleDeleteSkill(long id) {
-    this.skillRepository.deleteById(id);
   }
 
   public Skill fetchSkillById(long id) {
     Optional<Skill> skillOptional = this.skillRepository.findById(id);
-    if (skillOptional.isPresent()) {
+    if (skillOptional.isPresent())
       return skillOptional.get();
-    }
     return null;
   }
+
+  // CREATE
+  public Skill createSkill(Skill s) {
+    return this.skillRepository.save(s);
+  }
+
+  // UPDATE
+  public Skill updateSkill(Skill s) {
+    return this.skillRepository.save(s);
+  }
+
+  // DELETE
+  public void deleteSkill(long id) {
+    // delete job (inside job_skill table)
+    Optional<Skill> skillOptional = this.skillRepository.findById(id);
+    Skill currentSkill = skillOptional.get();
+    currentSkill.getJobs().forEach(job -> job.getSkills().remove(currentSkill));
+    // delete skill
+    this.skillRepository.delete(currentSkill);
+  }
+
 }
